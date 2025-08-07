@@ -1,24 +1,50 @@
-require("dotenv").config();
 const express = require("express");
-const connectDB = require("./database/connect");
-
-const app = express();
 const cors = require("cors");
-const port = process.env.PORT;
-const authRouter = require("./routes/userRouter");
-const contactRouter = require("./routes/contact");
-const feedbackRouter = require("./routes/feedback");
-const tripRouter = require ("./routes/trip")
-connectDB();
+const mongoose = require("mongoose");
+require("dotenv").config();
+const userRouter = require("./routes/userRouter");
+const app = express();
+const nodemailer = require("nodemailer"); // Add this line
 
+// Middlewares
 app.use(express.json());
 app.use(cors());
-app.use("/", authRouter);
-app.use("/contact",contactRouter)
-app.use("/feedback",feedbackRouter)
-app.use("/trip",tripRouter)
 
+// Routes
+app.use("/", userRouter);
 
-app.listen(port, () => {
-  console.log(`Server is up and listening on port ${port}`);
+// Nodemailer setup and connection check
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+transporter.verify(function (error, success) {
+  if (error) {
+    console.error("Nodemailer connection failed:", error);
+  } else {
+    console.log("Nodemailer connected now"); // This will show in your terminal
+  }
+});
+
+// Database connection
+const connect = () => {
+  try {
+    mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("MongoDb database connected");
+  } catch (err) {
+    console.log("MongoDb database connection failed");
+    console.log(err);
+  }
+};
+// Server listening
+app.listen(process.env.PORT, () => {
+  connect();
+  console.log(`Server is running on port ${process.env.PORT}`);
 });
