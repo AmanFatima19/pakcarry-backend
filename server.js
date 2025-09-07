@@ -23,16 +23,13 @@ const __dirname = path.dirname(__filename);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.json());
 
-// Enhanced CORS configuration
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
 
     const allowedOrigins = [
-      "http://localhost:5173",
-      "http://localhost:3000",
-      "https://fyp-backend-yxwi.onrender.com",
-      // Add your production frontend URL here when deployed
+      "https://pakcarry-frontend.vercel.app/",
+      "https://pakcarry-backend.onrender.com",
     ];
 
     if (allowedOrigins.indexOf(origin) !== -1) {
