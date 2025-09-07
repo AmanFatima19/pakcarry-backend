@@ -28,7 +28,7 @@ const corsOptions = {
     if (!origin) return callback(null, true);
 
     const allowedOrigins = [
-      "https://pakcarry-frontend-fyp.vercel.app/",
+      "https://pakcarry-frontend-fyp.vercel.app",
       "https://pakcarry-backend.onrender.com",
     ];
 
